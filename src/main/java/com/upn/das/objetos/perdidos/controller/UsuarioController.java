@@ -42,7 +42,7 @@ public class UsuarioController {
 			final UsuarioDTO response = this.usuarioService.login(correo, contra);
 			if (Objects.isNull(response)) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
-						.body("No se encontró usuario con los datos ingresados");
+						.body("No se encontró usuario con los datos ingresados en los parametros");
 			} else {
 				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response);
 			}
