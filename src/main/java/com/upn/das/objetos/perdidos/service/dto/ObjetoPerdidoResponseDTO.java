@@ -6,7 +6,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class ObjetoPerdidoDTO implements Serializable {
+public class ObjetoPerdidoResponseDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,6 +17,6 @@ public class ObjetoPerdidoDTO implements Serializable {
 	private String lugarEncontrado;
 	private Date fechaEncontrado;
 	private String descripcion;
-	private byte[] evidencia;
-	private char estado;
+	private String evidenciaB64;
+	private String estado;
 }
