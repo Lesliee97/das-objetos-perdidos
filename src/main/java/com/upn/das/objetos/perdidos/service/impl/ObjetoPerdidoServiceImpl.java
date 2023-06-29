@@ -1,8 +1,11 @@
 package com.upn.das.objetos.perdidos.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +20,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.upn.das.objetos.perdidos.persistence.entity.AlertaObjeto;
 import com.upn.das.objetos.perdidos.persistence.entity.ObjetoPerdido;
+import com.upn.das.objetos.perdidos.persistence.repository.AlertaObjetoRepository;
 import com.upn.das.objetos.perdidos.persistence.repository.ObjetoPerdidoRepository;
 import com.upn.das.objetos.perdidos.service.IObjetoPerdidoService;
 import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoRequestDTO;
@@ -30,11 +35,17 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 	private ModelMapper mapper = new ModelMapper();
 	private Logger log = LoggerFactory.getLogger(ObjetoPerdidoServiceImpl.class);
 
+	ZoneId zonaHoraria = ZoneId.of("America/Lima");
+	LocalDateTime localDateTime = LocalDateTime.now(zonaHoraria);
+
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Autowired
 	private ObjetoPerdidoRepository objetoPerdidoRepository;
+
+	@Autowired
+	private AlertaObjetoRepository alertaObjetoRepository;
 
 	@Override
 	public ObjetoPerdidoResponseDTO findById(Long idObjeto) {
@@ -90,8 +101,9 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 
 			objetoPerdido.setEstado('P');
 
-			ObjetoPerdidoResponseDTO response = this.mapper.map(this.objetoPerdidoRepository.save(objetoPerdido),
-					ObjetoPerdidoResponseDTO.class);
+			objetoPerdido = this.objetoPerdidoRepository.save(objetoPerdido);
+
+			ObjetoPerdidoResponseDTO response = this.mapper.map(objetoPerdido, ObjetoPerdidoResponseDTO.class);
 			log.info("Se guardó la entidad.");
 
 			if (objeto.getEvidenciaB64() != null && !objeto.getEvidenciaB64().isEmpty()) {
@@ -100,6 +112,18 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 
 			envioCorreoNuevoObjeto(response);
 			log.info("Se enviaron los correos.");
+
+			Date fechaActual = Date.from(localDateTime.atZone(zonaHoraria).toInstant());
+
+			AlertaObjeto alerta = new AlertaObjeto();
+			alerta.setObjetoPerdido(objetoPerdido);
+			alerta.setEstado('E');
+			alerta.setFechaAlerta(fechaActual);
+
+			alerta = this.alertaObjetoRepository.save(alerta);
+
+			log.info("Se guardo el envío de la alerta digital.");
+
 			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,8 +134,7 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 	public void envioCorreoNuevoObjeto(ObjetoPerdidoResponseDTO response) {
 		try {
 
-			List<String> correosUsuarios = Arrays.asList("pedrovergara26@gmail.com", "n00252467@upn.pe",
-					"n00279437@upn.pe");
+			List<String> correosUsuarios = Arrays.asList("n00252467@upn.pe", "n00279437@upn.pe");
 
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
