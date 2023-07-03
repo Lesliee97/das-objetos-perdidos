@@ -16,5 +16,6 @@ public class ObjetoPerdidoRequestDTO implements Serializable {
 	private String lugarEncontrado;
 	private Date fechaEncontrado;
 	private String descripcion;
+	private String nombre;
 	private String evidenciaB64;
 }

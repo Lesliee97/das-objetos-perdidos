@@ -54,6 +54,9 @@ public class ObjetoPerdido implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
+	@Basic(optional = false)
+	@Column(name = "NOMBRE")
+	private String nombre;
 	@Lob
 	@Column(name = "EVIDENCIA")
 	private byte[] evidencia;

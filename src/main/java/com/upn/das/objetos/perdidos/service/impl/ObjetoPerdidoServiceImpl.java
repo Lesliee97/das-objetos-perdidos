@@ -142,7 +142,8 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 			for (String correo : correosUsuarios) {
 				helper.setTo(correo);
 				helper.setSubject("¡Se registró un nuevo objeto perdido! Verifica si es tuyo.");
-				helper.setText("<h2>Objeto perdido encontrado en: " + response.getLugarEncontrado() + ". </h2>"
+				helper.setText("<h2>Objeto perdido: <b>" + response.getNombre() + "</b>, encontrado en: <b>"
+						+ response.getLugarEncontrado() + "</b>. </h2>"
 						+ "El día de hoy se registro un objeto perdido, encontrado el día: "
 						+ response.getFechaEncontrado().toString() + ".<br>"
 						+ "La descripción brindada del objeto encontrado es: " + response.getDescripcion()
