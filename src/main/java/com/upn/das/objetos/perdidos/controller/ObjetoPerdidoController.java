@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.upn.das.objetos.perdidos.service.IObjetoPerdidoService;
 import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoRequestDTO;
 import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoResponseDTO;
+import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoUpdateDTO;
 import com.upn.das.objetos.perdidos.utils.Constantes;
 
 import io.swagger.annotations.Api;
@@ -90,6 +92,30 @@ public class ObjetoPerdidoController {
 	public ResponseEntity<Object> saveObjetoPerdido(@RequestBody ObjetoPerdidoRequestDTO objetoPerdidoDTO) {
 		try {
 			final ObjetoPerdidoResponseDTO response = this.objetoPerdidoService.saveObjetoPerdido(objetoPerdidoDTO);
+			if (Objects.isNull(response)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
+						.body("No se encontraron datos");
+			} else {
+				return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(response);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
+					.body(e.getLocalizedMessage());
+		}
+
+	}
+
+	@PutMapping(value = "/updateObjetoPerdido")
+	@ApiOperation(value = "Actualiza un objeto perdido.")
+	@ApiResponses({ @ApiResponse(code = 201, message = Constantes.HTTP_TEXT_201),
+			@ApiResponse(code = 400, message = Constantes.HTTP_TEXT_400),
+			@ApiResponse(code = 401, message = Constantes.HTTP_TEXT_401),
+			@ApiResponse(code = 403, message = Constantes.HTTP_TEXT_403),
+			@ApiResponse(code = 500, message = Constantes.HTTP_TEXT_500) })
+	public ResponseEntity<Object> updateObjetoPerdido(@RequestBody ObjetoPerdidoUpdateDTO objetoPerdidoDTO) {
+		try {
+			final ObjetoPerdidoResponseDTO response = this.objetoPerdidoService.updateObjetoPerdido(objetoPerdidoDTO);
 			if (Objects.isNull(response)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
 						.body("No se encontraron datos");

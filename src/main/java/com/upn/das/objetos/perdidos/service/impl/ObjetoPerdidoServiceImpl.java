@@ -27,6 +27,7 @@ import com.upn.das.objetos.perdidos.persistence.repository.ObjetoPerdidoReposito
 import com.upn.das.objetos.perdidos.service.IObjetoPerdidoService;
 import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoRequestDTO;
 import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoResponseDTO;
+import com.upn.das.objetos.perdidos.service.dto.ObjetoPerdidoUpdateDTO;
 
 @Service
 @Transactional
@@ -158,5 +159,21 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public ObjetoPerdidoResponseDTO updateObjetoPerdido(ObjetoPerdidoUpdateDTO objeto) {
+		Optional<ObjetoPerdido> buscado = this.objetoPerdidoRepository.findById(objeto.getIdObjetoPerdido());
+		if (buscado.isPresent()) {
+			ObjetoPerdido objetoModel = buscado.get();
+			objetoModel.setDescripcion(objeto.getDescripcion());
+			objetoModel.setNombre(objeto.getNombre());
+
+			objetoModel = this.objetoPerdidoRepository.save(objetoModel);
+
+			ObjetoPerdidoResponseDTO response = this.mapper.map(objetoModel, ObjetoPerdidoResponseDTO.class);
+			return response;
+		}
+		return null;
 	}
 }
