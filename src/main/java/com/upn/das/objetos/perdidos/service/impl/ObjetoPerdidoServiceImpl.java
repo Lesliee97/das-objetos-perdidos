@@ -1,5 +1,6 @@
 package com.upn.das.objetos.perdidos.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -135,24 +136,27 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 	public void envioCorreoNuevoObjeto(ObjetoPerdidoResponseDTO response) {
 		try {
 
-			List<String> correosUsuarios = Arrays.asList("n00252467@upn.pe", "n00279437@upn.pe");
+			List<String> correosUsuarios = Arrays.asList("n00252467@upn.pe", "n00264979@upn.pe", "n00244204@upn.pe",
+					"n00265438@upn.pe", "n00245418@upn.pe", "n00238776@upn.pe");
+
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
+			helper.setSubject("¡Se registró un nuevo objeto perdido! Verifica si es tuyo.");
+			helper.setText("<h2>Objeto perdido: <b>" + response.getNombre() + "</b>, encontrado en: <b>"
+					+ response.getLugarEncontrado() + "</b>. </h2>"
+					+ "<b>El día de hoy se registro un objeto perdido, encontrado el día:</b> "
+					+ formato.format(response.getFechaEncontrado()) + ".<br>"
+					+ "<b>La descripción brindada del objeto encontrado es:</b> " + response.getDescripcion()
+					+ "<br><b>Se adjunta la imagen de referencia otorgada por la persona que encontró el objeto:</b><br>"
+					+ "<img src='data:image/jpg;base64," + response.getEvidenciaB64() + "'><br>"
+					+ "<br>Gracias por su atención.<br><br>"
+					+ "<b>Este es un correo automático, por favor no responder.</b>", true);
+
 			for (String correo : correosUsuarios) {
 				helper.setTo(correo);
-				helper.setSubject("¡Se registró un nuevo objeto perdido! Verifica si es tuyo.");
-				helper.setText("<h2>Objeto perdido: <b>" + response.getNombre() + "</b>, encontrado en: <b>"
-						+ response.getLugarEncontrado() + "</b>. </h2>"
-						+ "El día de hoy se registro un objeto perdido, encontrado el día: "
-						+ response.getFechaEncontrado().toString() + ".<br>"
-						+ "La descripción brindada del objeto encontrado es: " + response.getDescripcion()
-						+ "<br>Se adjunta la imagen de referencia otorgada por la persona que encontró el objeto:<br>"
-						+ "<img src='data:image/jpg;base64," + response.getEvidenciaB64() + "'><br>"
-						+ "<br>Gracias por su atención.<br><br>"
-						+ "<b>Este es un correo automático, por favor no responder.</b>", true);
-
 				mailSender.send(message);
 			}
 
