@@ -137,7 +137,7 @@ public class ObjetoPerdidoServiceImpl implements IObjetoPerdidoService {
 		try {
 
 			List<String> correosUsuarios = Arrays.asList("n00252467@upn.pe", "n00264979@upn.pe", "n00244204@upn.pe",
-					"n00265438@upn.pe", "n00245418@upn.pe", "n00238776@upn.pe");
+					"n00265438@upn.pe", "n00245418@upn.pe", "n00238776@upn.pe", "n00279437@upn.pe");
 
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
