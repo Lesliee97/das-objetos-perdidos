@@ -30,6 +30,7 @@ public class UsuarioController {
 	@Autowired
 	private IUsuarioService usuarioService;
 
+	// Nueva version
 	@PostMapping(value = "/login")
 	@ApiOperation(value = Constantes.LOGIN)
 	@ApiResponses({ @ApiResponse(code = 201, message = Constantes.HTTP_TEXT_201),
